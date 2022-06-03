@@ -1,0 +1,22 @@
+### create container
+POST {{host}}/container
+Content-Type: application/json
+
+< json/container.json
+
+### create todo
+POST {{host}}/task
+Content-Type: application/json
+
+{
+  "taskName": "Task1",
+  "destination": "Do some task1",
+  "taskOrder": 1,
+  "container": {
+    "containerId": "eb2b7129-7ed2-46ab-8764-5fdcb7fc0883"
+  }
+}
+
+### get all tasks
+GET {{host}}/task
+
