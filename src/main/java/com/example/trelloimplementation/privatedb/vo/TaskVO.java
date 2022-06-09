@@ -1,16 +1,15 @@
 package com.example.trelloimplementation.privatedb.vo;
 
 import com.example.trelloimplementation.privatedb.entity.Container;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class TaskVO {
 
@@ -22,8 +21,8 @@ public class TaskVO {
 
     private LocalDate created;
 
-    private Long taskOrder;
+    private int taskOrder;
 
-    ContainerVO container;
+    private ContainerVO container;
 
 }

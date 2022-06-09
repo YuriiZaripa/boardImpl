@@ -18,7 +18,7 @@
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <swagger2.version>3.0.0</swagger2.version>
         <zalando.version>0.25.2</zalando.version>
-        <mockito.version>4.5.1</mockito.version>
+        <mockito.version>4.0.0</mockito.version>
         <springframework.plugin.version>2.2.5 RELEASE</springframework.plugin.version>
     </properties>
     <dependencies>

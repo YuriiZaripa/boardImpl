@@ -1,0 +1,50 @@
+### create container
+POST http://localhost:8080/container
+Content-Type: application/json
+
+< json/container.json
+
+### create container - !!!! Technical method for debugging. Remove in official version. !!!!
+POST http://localhost:8080/container/import
+Content-Type: application/json
+
+< json/containers.json
+
+### update container name
+PUT http://localhost:8080/container
+Content-Type: application/json
+
+{
+  "containerId": "b055dfdb-fecc-43ff-8948-44dcb925b33f",
+  "containerName": "NEWContainerName",
+  "containerOrder": 4,
+  "tasks":[]
+}
+
+### update container order
+PATCH http://localhost:8080/container
+Content-Type: application/json
+
+{
+  "containerId": "1a441331-cb09-467c-ba9b-c0aec29bad1f",
+  "containerOrder": 0,
+  "tasks":[]
+}
+
+### get all containers
+GET http://localhost:8080/container
+Content-Type: application/json
+
+### delete container by id
+DELETE http://localhost:8080/container
+Content-Type: application/json
+
+{
+  "containerId": "84a2a119-735e-4005-bc49-c5f6b9505a9c"
+}
+
+### delete all containers
+DELETE http://localhost:8080/container/deleteAll
+Content-Type: application/json
+
+

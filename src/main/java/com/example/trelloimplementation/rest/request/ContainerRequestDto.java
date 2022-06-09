@@ -18,7 +18,7 @@ public class ContainerRequestDto {
 
     private String containerName;
 
-    private Long containerOrder;
+    private int containerOrder;
 
     private List<Task> tasks = new ArrayList<>();
 

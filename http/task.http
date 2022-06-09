@@ -1,11 +1,33 @@
-### create container
-POST {{host}}/container
+### create containers
+POST http://localhost:8080/container/import
 Content-Type: application/json
 
-< json/container.json
+< json/containers.json
+
+### get all containers
+GET http://localhost:8080/container
+Content-Type: application/json
+
+### create tasks
+POST http://localhost:8080/task/import
+Content-Type: application/json
+
+< json/tasks.json
+
+### replace task
+PATCH http://localhost:8080/task
+Content-Type: application/json
+
+{
+  "taskId": "bd668f05-b57c-46f7-8df5-dc7fc2d38592",
+  "taskOrder": 0,
+  "container": {
+    "containerId": "9cdf9b87-4ab3-43e7-9d7d-18efdd659fb6"
+  }
+}
 
 ### create todo
-POST {{host}}/task
+POST http://localhost:8080/task
 Content-Type: application/json
 
 {
@@ -13,10 +35,11 @@ Content-Type: application/json
   "destination": "Do some task1",
   "taskOrder": 1,
   "container": {
-    "containerId": "eb2b7129-7ed2-46ab-8764-5fdcb7fc0883"
+    "containerId": "88294900-bf0b-4297-99bc-d436a6acc7a1"
   }
 }
 
 ### get all tasks
-GET {{host}}/task
+GET http://localhost:8080/task
+Content-Type: application/json
 

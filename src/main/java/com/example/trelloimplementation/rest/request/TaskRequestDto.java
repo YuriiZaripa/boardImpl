@@ -20,8 +20,8 @@ public class TaskRequestDto {
 
     private LocalDate created;
 
-    private Long taskOrder;
+    private int taskOrder;
 
-    ContainerResponseDto container;
+    private ContainerResponseDto container;
 
 }

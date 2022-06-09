@@ -4,11 +4,12 @@ import com.example.trelloimplementation.privatedb.entity.Task;
 import com.example.trelloimplementation.privatedb.vo.TaskVO;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface TaskRestMapper {
 
     Task toTask(TaskVO taskVO);
 
     TaskVO toTaskVO(Task task);
-
 }

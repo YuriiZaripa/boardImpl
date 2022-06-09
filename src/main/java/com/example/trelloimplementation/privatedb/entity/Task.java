@@ -1,10 +1,7 @@
 package com.example.trelloimplementation.privatedb.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -24,21 +21,24 @@ public class Task {
     @Column(name = "taskId")
     private UUID taskId;
 
+//todo    @NonNull
     @Column(name = "task_name")
     private String taskName;
 
     @Column(name = "destination")
     private String destination;
 
+//todo    @NonNull
     @Column(name = "created")
     private LocalDate created;
 
+//todo    @NonNull
+//todo    @UniqueElements
     @Column(name = "task_order")
-    private Long taskOrder;
+    private int taskOrder;
 
     @ManyToOne
-//    @JsonBackReference
     @JsonIgnoreProperties({"tasks"})
-    Container container;
+    private Container container;
 
 }

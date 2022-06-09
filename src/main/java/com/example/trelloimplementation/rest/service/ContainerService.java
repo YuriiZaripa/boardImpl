@@ -6,6 +6,7 @@ import com.example.trelloimplementation.privatedb.repository.ContainerRepository
 import com.example.trelloimplementation.privatedb.vo.ContainerVO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jmx.export.naming.IdentityNamingStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,47 +32,92 @@ public class ContainerService {
         List<Container> container = containerMapper.toContainerList(containerVO);
         List<Container> saveContainer = containerRepository.saveAll(container);
         return containerMapper.toListVO(saveContainer);
-    }
+    }// Technical method for debugging. Remove in official version.
 
-    public List<ContainerVO> getAll() {
-        List<Container> containers = containerRepository.findAll();
+    public List<ContainerVO> findAll() {
+        List<Container> containers = containerRepository.findAllByOrderByContainerOrder();
         return containerMapper.toListVO(containers);
     }
 
     @Transactional
-    public ContainerVO rename(ContainerVO containerVO) {
+    public ContainerVO update(ContainerVO containerVO) {
         Container container = containerMapper.toContainer(containerVO);
-        containerRepository.rename(container.getContainerId(), container.getContainerName());
-
+        containerRepository.save(container);
         return containerMapper.toContainerVO(
-                containerRepository.findById(container.getContainerId())
-                .orElseThrow());
+                containerRepository
+                        .findById(container.getContainerId())
+                        .orElseThrow());
     }
 
     @Transactional
-    public List<ContainerVO> move(ContainerVO containerVO) {
-        Container container = containerMapper.toContainer(containerVO);
-        containerRepository.move(container.getContainerOrder());
-        containerRepository.editOrder(container.getContainerId(), container.getContainerOrder());
+    public List<ContainerVO> updateOrder(ContainerVO containerVO) {
+        Container currentOrderContainer = containerMapper.toContainer(containerVO);
+        List<Container> containers = containerRepository.findAllByOrderByContainerOrder();
+        Container oldOrderContainer = containerRepository.findById(currentOrderContainer.getContainerId())
+                                                .orElseThrow();
+        int fromOrder = oldOrderContainer.getContainerOrder();
 
-        return containerMapper.toListVO(containerRepository.findAll());
+        replaceOrder(containers, fromOrder, currentOrderContainer.getContainerOrder());
+        containerRepository.saveAll(containers);
+
+        return containerMapper.toListVO(containerRepository.findAllByOrderByContainerOrder());
     }
 
     @Transactional
     public void delete(ContainerVO containerVO) {
-        try{
-            Container container = containerMapper.toContainer(containerVO);
-            Optional<Container> currantContainer = containerRepository.findById(container.getContainerId());
-            containerRepository.removeOrder(currantContainer.orElseThrow().getContainerOrder());
-            containerRepository.delete(currantContainer.get());
-        } catch (NoSuchElementException e) {
-            log.error("Container hasn't been renamed", e);
-            throw new RuntimeException();
-        }
+        Container containerToDelete = containerMapper.toContainer(containerVO);
+        List<Container> containers = containerRepository.findAllByOrderByContainerOrder();
+        Container currentContainer = containerRepository.findById(containerToDelete.getContainerId()).orElseThrow();
+        int fromOrder = currentContainer.getContainerOrder();
+
+        replaceOrder(containers, fromOrder, containers.size() - 1);
+        containers.remove(currentContainer);
+        containerRepository.delete(currentContainer);
+        containerRepository.saveAll(containers);
+
     }
 
     public void deleteAll() {
         containerRepository.deleteAll();
     }
 
+    private List<Container> removeOrder(List<Container> containers, int containerOrder) {
+        Container container;
+
+        for (int order = containerOrder + 1; order < containers.size(); order++) {
+            container = containers.get(order);
+            container.setContainerOrder(order - 1);
+        }
+
+        return containers;
+    }
+
+    private void replaceOrder(List<Container> containers, int from, int to) {
+        if (from > to) replaceToDown(containers, from, to);
+        else if (from < to) replaceToUp(containers, from, to);
+    }
+
+    private void replaceToDown(List<Container> containers, int from, int to) {
+        Container container;
+
+        for (int order = to; order <= from; order++) {
+            container = containers.get(order);
+            container.setContainerOrder(order + 1);
+        }
+
+        container = containers.get(from);
+        container.setContainerOrder(to);
+    }
+
+    private void replaceToUp(List<Container> containers, int from, int to) {
+        Container container;
+
+        for (int order = from + 1; order <= to; order++) {
+            container = containers.get(order);
+            container.setContainerOrder(order - 1);
+        }
+
+        container = containers.get(from);
+        container.setContainerOrder(to);
+    }
 }
